@@ -16,16 +16,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JPasswordField;
 
 public class TelaLogin extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JTextField textField;
-	private JTextField textField_1;
+	private JPasswordField passwordField;
 
-	/**
-	 * Create the frame.
-	 */
 	public TelaLogin() {
 
 		JPanel panel = new JPanel();
@@ -49,38 +47,42 @@ public class TelaLogin extends JFrame {
 		panel.add(lblSenha);
 
 		textField = new JTextField();
-		textField.setBounds(32, 93, 378, 21);
+		textField.setBounds(99, 93, 279, 21);
 		panel.add(textField);
 		textField.setColumns(10);
 
-		textField_1 = new JTextField();
-		textField_1.setBounds(32, 149, 378, 21);
-		panel.add(textField_1);
-		textField_1.setColumns(10);
-
 		JButton btnLogin = new JButton("ENTRAR");
-		btnLogin.setBounds(176, 220, 84, 33);
+		btnLogin.setBounds(187, 220, 84, 33);
 		panel.add(btnLogin);
+
+		passwordField = new JPasswordField();
+		passwordField.setBounds(99, 154, 279, 21);
+		panel.add(passwordField);
 
 		btnLogin.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
+				if (textField.getText().isEmpty() || passwordField.getPassword().length == 0) {
+					JOptionPane.showMessageDialog(null, "Preencha todos os campos!");
+					return;
+				}
+
 				Usuario usuario = new Usuario();
 
 				usuario.setUsuario(textField.getText());
-				usuario.setSenha(textField_1.getText());
+				String senhaDigitada = new String(passwordField.getPassword());
+				usuario.setSenha(senhaDigitada);
 
 				UsuarioDAO dao = new UsuarioDAO();
 
-				boolean usuarioValido = dao.validarLogin(usuario);
-				
-				if (usuarioValido) {
-					//dispose(); new TelaSalvar();
-					dispose(); new TelaListar();
+				if (dao.validarLogin(usuario)) {
+					dispose();
+					TelaListar listar = new TelaListar();
+					listar.setLocationRelativeTo(null);
+					listar.setVisible(true);
 				} else {
-					JOptionPane.showMessageDialog(null, "Usuario invalido");
+					JOptionPane.showMessageDialog(null, "Usuario ou Senha invalidos");
 				}
 
 			}
